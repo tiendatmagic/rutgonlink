@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hi88vsk</title>
+</head>
+
+<body>
+  <p>Please wait...</p>
+
+  <script>
+    async function redirectToLink() {
+      try {
+        const response = await fetch('https://apidev.miuxmmo.com/rutgonlink/api/get-link/hi88vsk.com');
+        if (!response.ok) throw new Error('Lỗi khi gọi API');
+
+        const data = await response.json();
+
+        // Giả sử API trả về { success: true, url: 'https://...' }
+        if (data.success && data.url) {
+          window.location.href = data.url; // redirect
+        } else {
+          document.body.innerHTML = '<p>❌ Không lấy được link</p>';
+        }
+      } catch (err) {
+        console.error(err);
+        document.body.innerHTML = '<p>❌ Lỗi khi kết nối API</p>';
+      }
+    }
+
+    redirectToLink();
+  </script>
+</body>
+
+</html>

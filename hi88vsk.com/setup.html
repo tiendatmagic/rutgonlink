@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thêm Link Chuyển Tiếp</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #linkContainer {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 18px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #28a745;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #msg {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="linkContainer">
+    <h2>📌 Nhập link chuyển tiếp</h2>
+    <input type="text" id="urlInput" placeholder="Nhập link chuyển tiếp" />
+    <input type="password" id="passwordInput" placeholder="Nhập mật khẩu" />
+    <button type="button" id="submitBtn">Lưu link</button>
+    <div id="msg"></div>
+  </div>
+
+  <script>
+    const website = 'hi88vsk.com';
+    const urlEl = document.getElementById('urlInput');
+    const passEl = document.getElementById('passwordInput');
+    const btnEl = document.getElementById('submitBtn');
+    const msgEl = document.getElementById('msg');
+
+    fetch(`https://apidev.miuxmmo.com/rutgonlink/api/get-link/${website}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.url) {
+          urlEl.value = data.url;
+        }
+        msgEl.textContent = data.message || 'Đã load link';
+        msgEl.style.color = 'green';
+      })
+      .catch(() => {
+        msgEl.textContent = 'Lỗi kết nối API';
+        msgEl.style.color = 'red';
+      });
+
+    btnEl.addEventListener('click', () => {
+      const urlVal = urlEl.value.trim();
+      const passVal = passEl.value.trim();
+
+      if (!urlVal || !passVal) {
+        msgEl.textContent = 'Vui lòng điền đầy đủ thông tin';
+        msgEl.style.color = 'red';
+        return;
+      }
+
+      fetch('https://apidev.miuxmmo.com/rutgonlink/api/update-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ website, url: urlVal, password: passVal })
+      })
+        .then(res => res.json())
+        .then(data => {
+          msgEl.textContent = data.message || 'Lưu thành công';
+          msgEl.style.color = data.success ? 'green' : 'red';
+        })
+        .catch(() => {
+          msgEl.textContent = 'Lỗi kết nối API';
+          msgEl.style.color = 'red';
+        });
+    });
+  </script>
+
+</body>
+
+</html>
